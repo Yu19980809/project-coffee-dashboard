@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Box, Typography } from '@mui/material'
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
@@ -6,10 +6,31 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 import dayjs from 'dayjs'
 import { Header, LineChart } from '../../components'
+import { fetchNearest7DaysOrderData } from '../../api'
+import { formatOrderData } from '../../utils'
 
 const OrderStatistics = () => {
   const [startDate, setStartDate] = useState(dayjs(new Date().getTime() - 7 * 24 * 60 * 60 * 1000))
   const [endDate, setEndDate] = useState(dayjs(new Date()))
+  const [orderData, setOrderData] = useState([])
+  const [orderCount, setOrderCount] = useState(0)
+  const [orderPrice, setOrderPrice] = useState(0)
+
+  // 获取近7日的订单数据
+  useEffect(() => {
+    fetchNearest7DaysOrderData()
+      .then(response => {
+        const data = response.data.data
+        setOrderData(formatOrderData(data))
+        let count = 0, price = 0
+        data.forEach(item => {
+          count += item.count
+          price += item.price
+        })
+        setOrderCount(count)
+        setOrderPrice(price)
+      })
+  }, [])
 
   return (
     <Box m='20px'>
@@ -51,7 +72,7 @@ const OrderStatistics = () => {
             borderRadius: '4px'
           }}
         >
-          订单量
+          订单量： {orderCount}
         </Typography>
 
         <Typography
@@ -62,13 +83,13 @@ const OrderStatistics = () => {
             borderRadius: '4px'
           }}
         >
-          销售额
+          销售额: {orderPrice}
         </Typography>
       </Box>
 
       {/* 营业趋势 */}
       <Box height='60vh'>
-        <LineChart />
+        <LineChart data={orderData} />
       </Box>
     </Box>
   )

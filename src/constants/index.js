@@ -6,6 +6,45 @@ export const categoryTypes = [
   {name: '其他'}
 ]
 
+export const orderData = [
+  {
+    "id": "订单量",
+    "color": "hsl(149, 70%, 50%)",
+    "data": [
+      {
+        "x": "10-29",
+        "y": 10
+      },
+      {
+        "x": "10-30",
+        "y": 12
+      },
+      {
+        "x": "10-31",
+        "y": 8
+      }
+    ]
+  },
+  {
+    "id": "销售额",
+    "color": "hsl(64, 70%, 50%)",
+    "data": [
+      {
+        "x": "10-29",
+        "y": 100
+      },
+      {
+        "x": "10-30",
+        "y": 120
+      },
+      {
+        "x": "10-31",
+        "y": 80
+      }
+    ]
+  }
+]
+
 export const lineChartData = [
   {
     "id": "japan",

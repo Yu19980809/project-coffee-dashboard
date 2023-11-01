@@ -21,7 +21,7 @@ const MainContent = () => {
       <Sidebar />
 
       <main className='content'>
-        <Topbar />
+        {/* <Topbar /> */}
 
         <Routes>
           {/* DASHBOARD */}

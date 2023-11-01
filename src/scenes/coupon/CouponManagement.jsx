@@ -154,13 +154,34 @@ const CouponManagement = () => {
   // 删除优惠券相关参数
   const [ deleteCouponOpen, setDeleteCouponOpen ] = useState( false )
 
+  // 判断是否过期
+  const isExpired = date => {
+    const current = new Date().getTime()
+    const time = new Date(date).getTime()
+    return time <= current
+  }
+
   // 请求优惠券列表数据
   useEffect(() => {
-    fetchAllCoupons().then(res => setCoupons(res.data.data))
+    fetchAllCoupons().then(res => {
+      let data = res.data.data
+      data = data.map(item => {
+        return isExpired(item.end_date)
+        ? {...item, status: 'off'}
+        : item
+      })
+      setCoupons(data)
+    })
   }, [])
 
   // 切换生效状态
-  const handleStatusSwitch = (id, status) => {
+  const handleStatusSwitch = (id, end_date, status) => {
+    // 先判断是否已过期，未过期的才能切换
+    if (isExpired(end_date)) {
+      toast.error('该优惠券已过期，无法切换生效状态')
+      return
+    }
+
     if (status === 'on') {
       offCoupon(id)
         .then(() => {
@@ -255,9 +276,9 @@ const CouponManagement = () => {
     { field: 'end_date', headerName: '到期时间', flex: 1 },
     {
       field: 'status',
-      headerName: '上架状态',
+      headerName: '生效状态',
       flex: 0.5,
-      renderCell: ( { row: { _id, status } } ) => (
+      renderCell: ( { row: { _id, end_date, status } } ) => (
         <Box
           display='flex'
           justifyContent='center'
@@ -268,7 +289,7 @@ const CouponManagement = () => {
           <Switch
             checked={ status === 'on' }
             color='secondary'
-            onChange={ () => handleStatusSwitch( _id, status ) }
+            onChange={ () => handleStatusSwitch( _id, end_date, status ) }
           />
         </Box>
       )

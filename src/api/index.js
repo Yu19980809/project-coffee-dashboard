@@ -46,11 +46,17 @@ export const offCommodity = id => API.patch(`/commodity/web/off_single/${id}`)
 export const offCommodities = data => API.patch('/commodity/web/off_multiple', data)
 export const modifyCommoditiesCategory = data => API.patch('/commodity/web/category', data)
 
+// 商品统计
+export const fetchAllCommoditiesData = (startDate, endDate) => API.get(`/commodity/web/data?startDate=${startDate}&endDate=${endDate}`)
+
 // 订单管理
 export const fetchAllOrders = () => API.get('/order/web')
 export const deleteOrder = id => API.delete(`/order/web/${id}`)
 export const deleteOrders = data => API.delete('/order/web', {params: {idList: data}})
 export const doneOrder = id => API.patch(`/order/web/${id}`)
+
+// 订单统计
+export const fetchNearest7DaysOrderData = () => API.get('/order/web/data')
 
 // 优惠券管理
 export const fetchAllCoupons = () => API.get('/coupon/web')
